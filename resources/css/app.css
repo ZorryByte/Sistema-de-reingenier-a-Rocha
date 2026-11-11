@@ -1,0 +1,1501 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* x-cloak: oculta elementos Alpine.js antes de que se inicialicen (previene flash) */
+[x-cloak] { display: none !important; }
+
+/* Accesibilidad: respeta configuracion del SO para reducir movimiento */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+@layer base {
+    :root {
+        /* Global palette. Base OKLCH: #faf7f2 = oklch(97.71% 0.0074 80.7). */
+        --app-base: #faf7f2;
+        --app-surface: #f5f0e8;
+        --app-surface-strong: #efe5d8;
+        --app-ink: #3d2e24;
+        --app-muted: #6f5d46;
+        --app-accent: #5c4033;
+        --app-gold: #c4956a;
+        --app-amber: #d4a574;
+        --app-accent-soft: rgba(92, 64, 51, 0.10);
+        --app-border: rgba(92, 64, 51, 0.16);
+        --app-border-strong: rgba(92, 64, 51, 0.24);
+        /* Global semantics derived in OKLCH, exported to hex/RGB:
+           danger surface = base L - 0.03 -> #ffe3de;
+           success surface = base L + 0.02, clamped -> #ecffec. */
+        --app-success-surface: #ecffec;
+        --app-success: #295d2d;
+        --app-success-border: rgba(87, 136, 89, 0.24);
+        --app-success-soft: rgba(41, 93, 45, 0.02);
+        --app-danger-surface: #ffe3de;
+        --app-danger: #863a37;
+        --app-danger-border: rgba(192, 106, 100, 0.24);
+        --app-danger-soft: rgba(134, 58, 55, 0.02);
+
+        /* Finance aliases kept so the current module can use the global palette. */
+        --finance-base: var(--app-base);
+        --finance-surface: var(--app-surface);
+        --finance-surface-strong: var(--app-surface-strong);
+        --finance-ink: var(--app-ink);
+        --finance-muted: var(--app-muted);
+        --finance-accent: var(--app-accent);
+        --finance-accent-soft: var(--app-accent-soft);
+        --finance-border: var(--app-border);
+        --finance-border-strong: var(--app-border-strong);
+        --finance-success-surface: var(--app-success-surface);
+        --finance-success-bg: var(--app-success-soft);
+        --finance-success-border: var(--app-success-border);
+        --finance-success-text: var(--app-success);
+        --finance-danger-surface: var(--app-danger-surface);
+        --finance-danger-bg: var(--app-danger-soft);
+        --finance-danger-border: var(--app-danger-border);
+        --finance-danger-text: var(--app-danger);
+    }
+
+    /* Optimizacion de renderizado para elementos interactivos del navbar */
+    nav a,
+    nav button {
+        will-change: auto;
+    }
+
+    /* Evitar layout shift durante carga de fuentes */
+    body {
+        font-display: swap;
+    }
+}
+
+@layer components {
+
+    /* ---- Tabular numbers for data display ---- */
+    .tabular-nums {
+        font-variant-numeric: tabular-nums;
+    }
+
+    /* ---- Cards ---- */
+    .form-card {
+        @apply bg-white rounded-2xl shadow-sm border border-bakery-amber/20 p-6;
+    }
+
+    .form-card-compact {
+        @apply bg-white rounded-xl shadow-sm border border-bakery-amber/20 p-4;
+    }
+
+    .inventory-page {
+        @apply px-4 py-6 sm:px-6 sm:py-8;
+    }
+
+    .inventory-shell {
+        @apply mx-auto w-full max-w-7xl space-y-6;
+    }
+
+    .inventory-header {
+        @apply rounded-2xl border border-bakery-amber/15 bg-white/80 p-5 shadow-[0_18px_50px_rgba(61,46,36,0.06)] sm:p-6;
+    }
+
+    .inventory-card {
+        @apply rounded-2xl border border-bakery-amber/15 bg-white shadow-[0_14px_40px_rgba(61,46,36,0.05)];
+    }
+
+    .inventory-stat {
+        @apply rounded-2xl border border-bakery-amber/15 bg-white/85 p-4 shadow-sm;
+    }
+
+    .inventory-stat-label {
+        @apply text-[11px] font-semibold uppercase tracking-[0.14em] text-bakery-muted;
+    }
+
+    .inventory-stat-value {
+        @apply mt-1 text-2xl font-display font-bold tracking-tight text-bakery-dark tabular-nums;
+    }
+
+    /* ---- Finance workspace ---- */
+    .finance-page {
+        @apply py-5 sm:py-7;
+    }
+
+    .gastos-page {
+        background:
+            radial-gradient(circle at 0% 0%, rgba(92, 64, 51, 0.07), transparent 34%),
+            linear-gradient(180deg, rgba(250, 247, 242, 0.96), rgba(245, 240, 232, 0.88));
+    }
+
+    .gastos-shell {
+        @apply mx-auto w-full max-w-7xl px-4 sm:px-6;
+    }
+
+    .gastos-form-shell {
+        @apply mx-auto w-full max-w-4xl px-4 sm:px-6;
+    }
+
+    .gastos-form-shell-narrow {
+        @apply mx-auto w-full max-w-3xl px-4 sm:px-6;
+    }
+
+    .gastos-section {
+        @apply rounded-xl border p-4 sm:p-5;
+        background-color: rgba(250, 247, 242, 0.58);
+        border-color: var(--finance-border);
+    }
+
+    .gastos-section-strong {
+        @apply rounded-xl border p-4 sm:p-5;
+        background-color: rgba(239, 229, 216, 0.62);
+        border-color: var(--finance-border-strong);
+    }
+
+    .finance-icon-label {
+        @apply inline-flex items-center gap-2;
+    }
+
+    .finance-icon-label svg {
+        @apply shrink-0;
+    }
+
+    .finance-stack {
+        @apply space-y-5 sm:space-y-6;
+    }
+
+    .finance-analytic-page {
+        background:
+            linear-gradient(180deg, rgba(255, 255, 255, 0.30), rgba(255, 255, 255, 0) 24%),
+            radial-gradient(ellipse at 18% 0%, rgba(92, 64, 51, 0.035), transparent 42%);
+    }
+
+    .finance-analytic-shell {
+        @apply mx-auto grid w-full max-w-7xl grid-cols-1 gap-6 px-4 sm:px-6 lg:grid-cols-12 lg:gap-6;
+    }
+
+    .finance-reveal {
+        animation: financeReveal 220ms ease-out both;
+    }
+
+    .finance-reveal:nth-child(2) {
+        animation-delay: 40ms;
+    }
+
+    .finance-reveal:nth-child(3) {
+        animation-delay: 80ms;
+    }
+
+    .finance-reveal:nth-child(4) {
+        animation-delay: 120ms;
+    }
+
+    .finance-reveal:nth-child(5) {
+        animation-delay: 160ms;
+    }
+
+    .finance-hero-bare {
+        @apply flex flex-col gap-4 lg:col-span-12 lg:flex-row lg:items-end lg:justify-between;
+    }
+
+    .finance-headline {
+        @apply py-2 lg:col-span-12;
+    }
+
+    .finance-zone-top,
+    .finance-zone-mid,
+    .finance-zone-bottom {
+        @apply grid grid-cols-1 gap-6 lg:col-span-12 lg:grid-cols-12 lg:gap-6;
+    }
+
+    .finance-surface {
+        @apply relative overflow-hidden rounded-xl border p-5 transition duration-200 sm:p-6;
+        background-color: rgba(255, 255, 255, 0.18);
+        border-color: rgba(92, 64, 51, 0.24);
+    }
+
+    .finance-surface::before {
+        content: "";
+        @apply pointer-events-none absolute inset-x-0 top-0 h-px;
+        background-color: rgba(92, 64, 51, 0.18);
+    }
+
+    .finance-chart-surface {
+        background-color: rgba(255, 255, 255, 0.14);
+    }
+
+    .finance-h1 {
+        @apply text-[30px] font-display font-bold tracking-tight text-bakery-dark sm:text-[36px];
+    }
+
+    .finance-h2 {
+        @apply text-[19px] font-display font-bold tracking-tight text-bakery-dark sm:text-[22px];
+    }
+
+    .finance-h3 {
+        @apply text-[16px] font-bold tracking-tight text-bakery-dark sm:text-[18px];
+    }
+
+    .finance-body {
+        @apply text-sm font-medium leading-relaxed text-bakery-muted;
+    }
+
+    .finance-caption {
+        @apply text-[11px] font-bold uppercase tracking-[0.10em] text-bakery-muted;
+    }
+
+    .finance-number {
+        @apply text-[28px] font-display font-bold tracking-tight text-bakery-dark tabular-nums sm:text-[32px];
+    }
+
+    .finance-tabs {
+        @apply mb-4 flex flex-wrap gap-1;
+    }
+
+    .finance-tab {
+        @apply rounded-lg px-3 py-1.5 text-xs font-bold text-bakery-muted transition duration-150 hover:bg-bakery-amber/10 hover:text-bakery-dark focus:outline-none focus:ring-2 focus:ring-bakery-gold/40;
+    }
+
+    .finance-tab[aria-selected="true"] {
+        @apply bg-bakery-dark text-white hover:bg-bakery-dark hover:text-white;
+    }
+
+    .finance-chart-frame {
+        @apply relative h-[280px] min-h-[280px];
+    }
+
+    .finance-chart-frame canvas {
+        @apply h-full max-h-[280px] w-full transition duration-200;
+    }
+
+    .finance-chart-frame.is-refreshing canvas {
+        animation: financeChartRefresh 220ms ease-out both;
+    }
+
+    .finance-chart-insight {
+        @apply mt-4 rounded-xl border border-bakery-amber/15 px-4 py-3 text-sm font-semibold text-bakery-dark;
+        background-color: rgba(255, 255, 255, 0.16);
+        border-color: rgba(92, 64, 51, 0.18);
+    }
+
+    .finance-chart-shimmer {
+        @apply absolute inset-0 overflow-hidden rounded-xl;
+        background-color: rgba(92, 64, 51, 0.04);
+    }
+
+    .finance-chart-shimmer::after {
+        content: "";
+        @apply pointer-events-none absolute inset-0;
+        background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.30) 50%, transparent 100%);
+        animation: dashboardShimmer 1.4s ease-in-out infinite;
+    }
+
+    .finance-error-block {
+        @apply rounded-xl border border-bakery-terracotta/20 bg-bakery-terracotta/5 px-4 py-3 text-sm font-semibold text-bakery-terracotta;
+    }
+
+    .finance-priority-list,
+    .finance-report-list {
+        @apply space-y-2;
+    }
+
+    .finance-priority-row {
+        @apply grid grid-cols-[minmax(0,1fr)_auto] gap-3 rounded-xl border p-3 transition duration-150 hover:border-bakery-brown/45;
+        background-color: rgba(255, 255, 255, 0.10);
+        border-color: rgba(92, 64, 51, 0.16);
+    }
+
+    .finance-report-list a {
+        @apply block rounded-xl border px-3 py-2.5 text-sm font-bold text-bakery-dark transition duration-150 hover:text-bakery-brown focus:outline-none focus:ring-2 focus:ring-bakery-gold/40;
+        background-color: rgba(255, 255, 255, 0.08);
+        border-color: rgba(92, 64, 51, 0.14);
+    }
+
+    .finance-report-list a:hover {
+        background-color: rgba(92, 64, 51, 0.06);
+        border-color: rgba(92, 64, 51, 0.28);
+    }
+
+    .finance-provider-bars {
+        @apply space-y-3;
+    }
+
+    .finance-provider-row {
+        @apply grid grid-cols-[auto_minmax(0,1fr)] gap-3 rounded-xl border p-3 text-sm transition duration-150 focus:outline-none focus:ring-2 focus:ring-bakery-gold/40;
+        background-color: rgba(255, 255, 255, 0.08);
+        border-color: rgba(92, 64, 51, 0.14);
+    }
+
+    .finance-provider-row:hover {
+        background-color: rgba(92, 64, 51, 0.055);
+        border-color: rgba(92, 64, 51, 0.28);
+    }
+
+    .finance-provider-icon {
+        @apply flex h-8 w-8 items-center justify-center rounded-lg text-bakery-brown;
+        background-color: rgba(92, 64, 51, 0.08);
+    }
+
+    .finance-provider-top {
+        @apply flex items-center justify-between gap-2 font-bold text-bakery-dark;
+    }
+
+    .finance-provider-track {
+        @apply mt-2 block h-2 overflow-hidden rounded-full;
+        background-color: rgba(92, 64, 51, 0.10);
+    }
+
+    .finance-provider-track span {
+        @apply block h-full rounded-full;
+        background: linear-gradient(90deg, rgba(92, 64, 51, 0.70), rgba(196, 149, 106, 0.80));
+        animation: financeBarGrow 220ms ease-out both;
+    }
+
+    .finance-provider-meta {
+        @apply mt-1 block text-xs font-semibold text-bakery-muted;
+    }
+
+    .finance-provider-empty {
+        @apply flex items-center gap-3 rounded-xl border p-4 text-sm font-semibold text-bakery-muted transition hover:text-bakery-dark;
+        background-color: rgba(255, 255, 255, 0.08);
+        border-color: rgba(92, 64, 51, 0.16);
+    }
+
+    .finance-section-link {
+        @apply text-xs font-bold text-bakery-brown transition hover:text-bakery-dark focus:outline-none focus:ring-2 focus:ring-bakery-gold/40;
+    }
+
+    .finance-profit-grid {
+        @apply grid grid-cols-1 gap-3 md:grid-cols-3;
+    }
+
+    .finance-profit-chart {
+        @apply rounded-xl border p-4;
+        background-color: rgba(255, 255, 255, 0.10);
+        border-color: rgba(92, 64, 51, 0.16);
+    }
+
+    .finance-profit-head {
+        @apply mb-3;
+    }
+
+    .finance-mini-chart-frame {
+        @apply relative min-w-0 h-52 md:h-44;
+    }
+
+    .finance-mini-chart-frame canvas {
+        @apply h-full w-full;
+    }
+
+    .finance-closing-surface {
+        @apply p-5 sm:p-6;
+    }
+
+    .finance-closing-grid {
+        @apply grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1.35fr)_minmax(260px,0.65fr)];
+    }
+
+    .finance-closing-chart {
+        @apply rounded-xl border p-4;
+        background-color: rgba(255, 255, 255, 0.08);
+        border-color: rgba(92, 64, 51, 0.16);
+    }
+
+    .finance-bar-chart-frame {
+        @apply relative min-w-0 h-[230px];
+    }
+
+    .finance-bar-chart-frame canvas {
+        @apply h-full max-h-[230px] w-full;
+    }
+
+    .finance-donut-chart-frame {
+        @apply relative min-w-0 h-[230px];
+    }
+
+    .finance-donut-chart-frame canvas {
+        @apply h-full max-h-[230px] w-full;
+    }
+
+    .finance-trace-grid {
+        @apply grid grid-cols-1 gap-3 md:grid-cols-3;
+    }
+
+    .finance-trace-row {
+        @apply grid grid-cols-[auto_minmax(0,1fr)] gap-3 rounded-xl border border-bakery-amber/10 p-4 transition duration-150 hover:border-bakery-gold/40;
+        background-color: rgba(255, 255, 255, 0.10);
+        border-color: rgba(92, 64, 51, 0.16);
+    }
+
+    .finance-trace-row:hover {
+        background-color: rgba(92, 64, 51, 0.055);
+        border-color: rgba(92, 64, 51, 0.28);
+    }
+
+    .finance-trace-number {
+        @apply text-[30px] font-display font-bold leading-none text-bakery-dark tabular-nums;
+    }
+
+    .finance-micro-status {
+        @apply flex flex-wrap items-stretch gap-3 rounded-xl p-3;
+        background-color: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(92, 64, 51, 0.18);
+    }
+
+    .finance-micro-item {
+        @apply min-w-[190px] flex-1 rounded-xl border px-3 py-2;
+        background-color: rgba(255, 255, 255, 0.08);
+    }
+
+    .finance-micro-link {
+        @apply flex items-center gap-3 text-sm transition duration-150 focus:outline-none focus:ring-2 focus:ring-bakery-gold/40;
+    }
+
+    .finance-micro-value {
+        @apply text-xl font-display font-bold text-bakery-dark tabular-nums;
+    }
+
+    .finance-header {
+        @apply flex flex-col gap-4 rounded-xl border p-4 sm:p-5 lg:flex-row lg:items-end lg:justify-between;
+        background: linear-gradient(135deg, rgba(250, 247, 242, 0.92), rgba(239, 229, 216, 0.70));
+        border-color: var(--finance-border);
+    }
+
+    .finance-kicker {
+        @apply text-[11px] font-bold uppercase tracking-[0.12em] text-bakery-brown/80;
+    }
+
+    .finance-title {
+        @apply mt-1 text-2xl font-display font-bold tracking-tight text-bakery-dark;
+    }
+
+    .finance-description {
+        @apply mt-1 max-w-2xl text-sm leading-relaxed;
+        color: var(--finance-muted);
+    }
+
+    .finance-actions {
+        @apply flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center lg:justify-end;
+    }
+
+    .finance-panel {
+        @apply rounded-xl border;
+        background-color: rgba(245, 240, 232, 0.70);
+        border-color: var(--finance-border);
+    }
+
+    .finance-panel-pad {
+        @apply p-4 sm:p-5;
+    }
+
+    .finance-filter {
+        @apply rounded-xl border p-3 sm:p-4;
+        background-color: rgba(239, 229, 216, 0.72);
+        border-color: var(--finance-border);
+    }
+
+    .finance-filter-row {
+        @apply grid grid-cols-1 gap-3 sm:grid-cols-2 lg:flex lg:items-end;
+    }
+
+    .finance-metric {
+        @apply rounded-xl border p-4 transition duration-150;
+        background-color: rgba(250, 247, 242, 0.56);
+        border-color: var(--finance-border);
+    }
+
+    .finance-metric:hover {
+        border-color: var(--finance-border-strong);
+    }
+
+    .finance-metric-label {
+        @apply text-xs font-semibold leading-snug text-bakery-muted;
+    }
+
+    .finance-metric-source {
+        @apply inline-flex rounded-full bg-bakery-warm px-2 py-0.5 text-[11px] font-semibold text-bakery-muted;
+    }
+
+    .finance-metric-value {
+        @apply mt-2 text-2xl font-bold tracking-tight tabular-nums;
+    }
+
+    .finance-section-head {
+        @apply mb-3 flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between;
+    }
+
+    .finance-section-title {
+        @apply text-sm font-bold tracking-[-0.01em] text-bakery-dark;
+    }
+
+    .finance-section-note {
+        @apply text-xs;
+        color: var(--finance-muted);
+    }
+
+    .finance-table-wrap {
+        @apply overflow-hidden rounded-xl border;
+        background-color: rgba(245, 240, 232, 0.66);
+        border-color: var(--finance-border);
+    }
+
+    .finance-hero-panel {
+        @apply overflow-hidden rounded-xl border;
+        background-color: rgba(250, 247, 242, 0.58);
+        border-color: var(--finance-border);
+    }
+
+    .finance-hero-dark {
+        @apply bg-bakery-dark text-white;
+    }
+
+    .finance-data-strip {
+        @apply grid grid-cols-1 divide-y divide-bakery-amber/10 border-y border-bakery-amber/10 sm:grid-cols-3 sm:divide-x sm:divide-y-0;
+    }
+
+    .finance-data-cell {
+        @apply py-4 sm:px-4 first:sm:pl-0 last:sm:pr-0;
+    }
+
+    .finance-chart-panel {
+        @apply rounded-xl border p-3 sm:p-4;
+        background-color: rgba(250, 247, 242, 0.48);
+        border-color: var(--finance-border);
+    }
+
+    .finance-chart-bar {
+        @apply rounded-t transition duration-150 hover:opacity-85;
+    }
+
+    .finance-expense-chart {
+        @apply relative h-52 min-w-0;
+    }
+
+    .finance-expense-chart canvas {
+        @apply h-full w-full;
+    }
+
+    .finance-toast {
+        @apply fixed bottom-4 right-4 z-50 flex max-w-sm items-center justify-between rounded-xl border px-4 py-3 text-sm shadow-[0_8px_24px_rgba(61,46,36,0.12)];
+        background-color: color-mix(in srgb, var(--finance-base) 96%, white 4%);
+        border-color: var(--finance-success-border);
+        color: var(--finance-success-text);
+    }
+
+    .finance-list-row {
+        @apply grid gap-3 py-3 transition hover:bg-bakery-warm/50 sm:grid-cols-[1fr_auto] sm:px-3;
+    }
+
+    .finance-chip {
+        @apply inline-flex items-center rounded-full border px-2.5 py-1 text-xs font-semibold;
+        background-color: var(--finance-accent-soft);
+        border-color: var(--finance-border);
+        color: var(--finance-accent);
+    }
+
+    .finance-table-scroll {
+        @apply overflow-x-auto;
+    }
+
+    .finance-table {
+        @apply w-full text-sm;
+    }
+
+    .finance-table thead {
+        @apply border-b;
+        background-color: rgba(239, 229, 216, 0.56);
+        border-color: var(--finance-border);
+    }
+
+    .finance-table th {
+        @apply px-4 py-3 text-left text-xs font-semibold;
+        color: var(--finance-muted);
+    }
+
+    .finance-table tbody {
+        @apply divide-y divide-bakery-amber/5;
+    }
+
+    .finance-table td {
+        @apply px-4 py-3;
+    }
+
+    .finance-row {
+        @apply transition duration-150;
+    }
+
+    .finance-row:hover {
+        background-color: rgba(239, 229, 216, 0.42);
+    }
+
+    .finance-empty {
+        @apply flex flex-col items-center justify-center px-4 py-10 text-center;
+    }
+
+    .finance-empty-icon {
+        @apply mb-3 flex h-12 w-12 items-center justify-center rounded-xl border border-bakery-amber/15 bg-bakery-warm text-bakery-amber;
+    }
+
+    .finance-mobile-list {
+        @apply divide-y divide-bakery-amber/10 md:hidden;
+    }
+
+    .finance-mobile-item {
+        @apply block px-4 py-3 transition;
+    }
+
+    .finance-mobile-item:hover {
+        background-color: rgba(239, 229, 216, 0.42);
+    }
+
+    .finance-status-success {
+        background-color: rgba(41, 93, 45, 0.055);
+        border: 1px solid rgba(92, 64, 51, 0.22);
+        color: var(--finance-success-text);
+    }
+
+    .finance-status-warning {
+        @apply border;
+        background-color: rgba(212, 165, 116, 0.075);
+        border-color: rgba(92, 64, 51, 0.22);
+        color: #6f4b1f;
+    }
+
+    .finance-status-danger {
+        background-color: rgba(178, 91, 62, 0.06);
+        border: 1px solid rgba(92, 64, 51, 0.22);
+        color: var(--finance-danger-text);
+    }
+
+    .finance-status-muted {
+        @apply border;
+        background-color: rgba(255, 255, 255, 0.08);
+        border-color: rgba(92, 64, 51, 0.18);
+        color: var(--finance-muted);
+    }
+
+    @keyframes financeReveal {
+        from { opacity: 0; transform: translateY(8px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes financeChartRefresh {
+        from { opacity: 0.72; transform: translateY(4px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes financeBarGrow {
+        from { transform: scaleX(0); transform-origin: left; }
+        to { transform: scaleX(1); transform-origin: left; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .finance-reveal,
+        .finance-chart-frame.is-refreshing canvas,
+        .finance-provider-track span {
+            animation: none;
+        }
+    }
+
+    .finance-action-menu {
+        @apply relative inline-flex;
+    }
+
+    .finance-action-menu summary {
+        @apply inline-flex h-9 min-w-9 cursor-pointer list-none items-center justify-center rounded-xl border px-3 text-sm font-bold transition focus:outline-none focus:ring-2 focus:ring-bakery-gold/35;
+        background-color: rgba(250, 247, 242, 0.70);
+        border-color: var(--finance-border);
+        color: var(--finance-accent);
+    }
+
+    .finance-action-menu summary::-webkit-details-marker {
+        display: none;
+    }
+
+    .finance-action-menu summary:hover {
+        background-color: rgba(239, 229, 216, 0.74);
+        border-color: var(--finance-border-strong);
+    }
+
+    .finance-action-menu[open] summary {
+        background-color: var(--finance-accent-soft);
+    }
+
+    .finance-action-menu-list {
+        @apply absolute right-0 top-11 z-20 min-w-36 rounded-xl border p-1.5 shadow-[0_12px_28px_rgba(61,46,36,0.12)];
+        background-color: var(--finance-base);
+        border-color: var(--finance-border);
+    }
+
+    .finance-action-menu-item {
+        @apply flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-xs font-semibold transition;
+        color: var(--finance-muted);
+    }
+
+    .finance-action-menu-item:hover {
+        background-color: rgba(239, 229, 216, 0.70);
+        color: var(--finance-accent);
+    }
+
+    .finance-soft-field {
+        @apply rounded-xl border px-4 py-2.5 text-sm font-semibold text-bakery-dark;
+        background-color: rgba(239, 229, 216, 0.58);
+        border-color: var(--finance-border);
+    }
+
+    .finance-desktop-table {
+        @apply hidden md:block;
+    }
+
+    .inventory-muted-panel {
+        @apply rounded-xl border border-bakery-amber/15 bg-bakery-warm/70 p-4;
+    }
+
+    .movement-row-link {
+        @apply inline-flex min-h-[36px] items-center justify-center rounded-lg px-3 text-xs font-semibold text-bakery-brown transition hover:bg-bakery-gold/10 hover:text-bakery-gold;
+    }
+
+    .movement-choice {
+        @apply min-h-[104px] rounded-2xl border border-bakery-amber/20 bg-white p-4 text-left transition duration-150 hover:border-bakery-amber/40 hover:bg-bakery-warm/60 peer-checked:border-bakery-gold peer-checked:bg-bakery-gold/10 peer-checked:shadow-[0_12px_32px_rgba(196,149,106,0.14)];
+    }
+
+    .movement-choice-title {
+        @apply text-sm font-semibold text-bakery-dark;
+    }
+
+    .movement-choice-text {
+        @apply mt-1 text-xs leading-relaxed text-bakery-muted;
+    }
+
+    /* ---- Typography ---- */
+    .section-title {
+        @apply text-xs font-semibold text-bakery-muted uppercase tracking-widest mb-4;
+    }
+
+    .section-subtitle {
+        @apply text-sm font-medium text-bakery-dark mb-1;
+    }
+
+    .section-hint {
+        @apply text-xs text-bakery-amber mt-0.5;
+    }
+
+    /* ---- Form elements ---- */
+    .form-input {
+        @apply w-full border border-bakery-amber/30 rounded-xl px-4 py-2.5 text-sm
+               text-bakery-dark placeholder-bakery-muted/60
+               focus:outline-none focus:ring-2 focus:ring-bakery-gold/40 focus:border-bakery-gold
+               transition duration-150;
+        background-color: rgba(255, 255, 255, 0.70);
+    }
+
+    .form-select {
+        @apply w-full border border-bakery-amber/30 rounded-xl px-4 py-2.5 text-sm
+               text-bakery-dark
+               focus:outline-none focus:ring-2 focus:ring-bakery-gold/40 focus:border-bakery-gold
+               transition duration-150;
+        background-color: rgba(255, 255, 255, 0.70);
+    }
+
+    .form-textarea {
+        @apply w-full border border-bakery-amber/30 rounded-xl px-4 py-2.5 text-sm
+               text-bakery-dark placeholder-bakery-muted/60 resize-none
+               focus:outline-none focus:ring-2 focus:ring-bakery-gold/40 focus:border-bakery-gold
+               transition duration-150;
+        background-color: rgba(255, 255, 255, 0.70);
+    }
+
+    .form-label {
+        @apply block text-sm font-medium text-bakery-dark mb-1.5;
+    }
+
+    /* Required field indicator: red asterisk for mandatory fields */
+    .form-label-required::after {
+        content: ' *';
+        @apply text-bakery-terracotta font-bold;
+    }
+
+    .form-error {
+        @apply text-bakery-terracotta text-xs mt-1;
+    }
+
+    /* ---- Buttons ---- */
+    .btn-primary {
+        @apply inline-flex items-center justify-center gap-2
+               bg-bakery-gold hover:bg-bakery-brown active:bg-bakery-dark
+               text-white text-sm font-semibold
+               px-6 py-2.5 rounded-xl
+               transition duration-150 focus:outline-none focus:ring-2 focus:ring-bakery-gold/40 focus:ring-offset-2
+               disabled:opacity-50 disabled:cursor-not-allowed;
+    }
+
+    .btn-secondary {
+        @apply inline-flex items-center justify-center gap-2
+               border border-bakery-amber/30
+               text-bakery-muted hover:text-bakery-dark
+               text-sm font-medium
+               px-6 py-2.5 rounded-xl
+               transition duration-150 focus:outline-none focus:ring-2 focus:ring-bakery-gold/35 focus:ring-offset-2;
+        background-color: rgba(250, 247, 242, 0.70);
+    }
+
+    .btn-secondary:hover {
+        background-color: rgba(239, 229, 216, 0.78);
+    }
+
+    .btn-danger {
+        @apply inline-flex items-center justify-center gap-2
+               bg-bakery-terracotta
+               text-white text-sm font-semibold
+               px-6 py-2.5 rounded-xl
+               transition duration-150 focus:outline-none focus:ring-2 focus:ring-bakery-terracotta/35 focus:ring-offset-2;
+    }
+
+    .btn-danger:hover {
+        background-color: var(--finance-danger-text);
+    }
+
+    .btn-danger:active {
+        background-color: #733127;
+    }
+
+    .btn-ghost {
+        @apply inline-flex items-center justify-center gap-2
+               text-bakery-muted hover:text-bakery-dark
+               text-sm font-medium
+               px-4 py-2 rounded-xl
+               transition duration-150 focus:outline-none focus:ring-2 focus:ring-bakery-gold/30;
+    }
+
+    .btn-ghost:hover {
+        background-color: rgba(239, 229, 216, 0.68);
+    }
+
+    .btn-icon {
+        @apply inline-flex items-center justify-center
+               text-bakery-muted/50 hover:text-bakery-terracotta
+               p-1.5 rounded-lg hover:bg-bakery-terracotta/10
+               transition duration-150;
+    }
+
+    /* ---- Badges ---- */
+    .badge {
+        @apply inline-flex items-center gap-1
+               text-xs font-medium px-2.5 py-0.5 rounded-full;
+    }
+
+    .badge-success {
+        @apply badge;
+        background-color: var(--finance-success-bg);
+        border: 1px solid var(--finance-success-border);
+        color: var(--finance-success-text);
+    }
+
+    .badge-warning {
+        @apply badge bg-bakery-amber/15 text-bakery-brown border border-bakery-amber/30;
+    }
+
+    .badge-danger {
+        @apply badge;
+        background-color: var(--finance-danger-bg);
+        border: 1px solid var(--finance-danger-border);
+        color: var(--finance-danger-text);
+    }
+
+    .badge-neutral {
+        @apply badge bg-bakery-warm text-bakery-muted border border-bakery-amber/20;
+    }
+
+    /* ---- Data rows (dynamic form rows) ---- */
+    .data-row {
+        @apply grid gap-3 items-end p-4
+               bg-bakery-warm rounded-xl border border-bakery-amber/20
+               relative;
+    }
+
+    .data-row-remove {
+        @apply absolute top-2 right-2
+               text-bakery-muted/40 hover:text-bakery-terracotta
+               p-1 rounded-lg hover:bg-bakery-terracotta/10
+               transition duration-150;
+    }
+
+    /* ---- Summary / totals ---- */
+    .total-line {
+        @apply flex justify-between items-center
+               pt-4 mt-4 border-t border-bakery-amber/20;
+    }
+
+    .total-label {
+        @apply text-sm font-medium text-bakery-muted;
+    }
+
+    .total-value {
+        @apply text-2xl font-bold text-bakery-dark;
+    }
+
+    /* ---- Empty state ---- */
+    .empty-state {
+        @apply text-center py-8 px-4;
+    }
+
+    .empty-state-icon {
+        @apply mx-auto w-12 h-12 text-bakery-amber/40 mb-3;
+    }
+
+    .empty-state-text {
+        @apply text-sm text-bakery-muted;
+    }
+
+    /* ---- Animations (Alpine.js compatible) ---- */
+    .fade-enter {
+        @apply opacity-0 scale-95;
+    }
+
+    .fade-enter-active {
+        @apply opacity-100 scale-100 transition duration-200;
+    }
+
+    .fade-leave {
+        @apply opacity-100 scale-100;
+    }
+
+    .fade-leave-active {
+        @apply opacity-0 scale-95 transition duration-150;
+    }
+
+    /* ---- Flash messages ---- */
+    .flash-success {
+        @apply bg-bakery-sage/10 border border-bakery-sage/20 text-bakery-sage;
+    }
+
+    /* ---- Dashboard atmosphere ---- */
+    .dashboard-bg {
+    background-color: #faf7f2;
+    background-image:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.42) 0%, rgba(255, 255, 255, 0) 24%),
+        radial-gradient(ellipse at 18% 0%, rgba(92, 64, 51, 0.055) 0%, transparent 42%),
+        radial-gradient(ellipse at 88% 12%, rgba(196, 149, 106, 0.045) 0%, transparent 38%);
+}
+
+.dashboard-shell {
+    @apply grid grid-cols-1 gap-8 py-8 lg:grid-cols-12 lg:gap-8;
+}
+
+/* Card principal transparente tipo Finanzas */
+.dashboard-surface {
+    @apply relative overflow-hidden rounded-2xl border p-6 transition duration-200 sm:p-8;
+    background-color: rgba(255, 255, 255, 0.18);
+    border-color: rgba(92, 64, 51, 0.24);
+    box-shadow: none;
+    backdrop-filter: blur(10px);
+}
+
+.dashboard-surface::before {
+    content: "";
+    @apply pointer-events-none absolute inset-x-0 top-0 h-px;
+    background-color: rgba(92, 64, 51, 0.16);
+}
+
+.dashboard-surface:hover {
+    background-color: rgba(255, 255, 255, 0.24);
+    border-color: rgba(92, 64, 51, 0.32);
+}
+
+/* Variante un poco más marcada, pero todavía transparente */
+.dashboard-surface-strong {
+    background-color: rgba(255, 255, 255, 0.24);
+    border-color: rgba(92, 64, 51, 0.28);
+}
+
+/* Card para gráficas */
+.dashboard-surface-chart {
+    background-color: rgba(255, 255, 255, 0.14);
+}
+
+/* Card destacada */
+.dashboard-surface-focus {
+    background-color: rgba(255, 255, 255, 0.22);
+    border-color: rgba(92, 64, 51, 0.34);
+}
+
+    /* ---- Hero (bare, no card) ---- */
+    .dashboard-hero-bare {
+        @apply relative flex flex-col gap-6 border-b border-bakery-amber/15 pb-8 lg:col-span-12 lg:flex-row lg:items-end lg:justify-between;
+    }
+
+    .dashboard-hero-copy {
+        @apply min-w-0 max-w-[72ch];
+    }
+
+    /* ---- Narrative headline (no card, just typography) ---- */
+    .dashboard-headline {
+        @apply max-w-[76ch] py-0 lg:col-span-12;
+    }
+
+    .dashboard-subtitle {
+        @apply mt-2 text-sm text-bakery-muted;
+    }
+
+    .dashboard-actions {
+        @apply flex flex-col gap-2 sm:flex-row lg:flex-shrink-0;
+    }
+
+    /* ---- Grid zones (12-col) ---- */
+    .dashboard-zone-top {
+        @apply grid grid-cols-1 gap-8 lg:col-span-12 lg:grid-cols-12 lg:gap-8;
+    }
+
+    .dashboard-zone-mid {
+        @apply grid grid-cols-1 gap-8 lg:col-span-12 lg:grid-cols-12 lg:gap-8;
+    }
+
+    .dashboard-zone-bottom {
+        @apply grid grid-cols-1 gap-8 lg:col-span-12 lg:grid-cols-12 lg:gap-8;
+    }
+
+    .dashboard-section-head {
+        @apply mb-5 flex items-start justify-between gap-4;
+    }
+
+    .dashboard-number {
+        @apply text-[32px] font-display font-bold tracking-tight text-bakery-dark tabular-nums;
+    }
+
+    .dashboard-count-group {
+        @apply flex flex-wrap justify-end gap-1.5 text-xs font-semibold text-bakery-muted;
+    }
+
+    .dashboard-count-group span {
+        @apply rounded-full bg-bakery-amber/10 px-2.5 py-1;
+    }
+
+    .dashboard-empty {
+        @apply rounded-xl border border-dashed px-6 py-10 text-center text-sm leading-6 text-bakery-muted;
+        background-color: rgba(92, 64, 51, 0.035);
+        border-color: rgba(61, 46, 36, 0.20);
+    }
+
+    .dashboard-kitchen-list {
+        @apply space-y-3;
+    }
+
+    .dashboard-kitchen-row {
+        @apply grid min-h-[80px] grid-cols-[minmax(0,1fr)_auto] items-center gap-4 rounded-xl border px-4 py-4 transition duration-150 sm:px-5;
+        background-color: rgba(250, 247, 242, 0.58);
+        border-color: rgba(61, 46, 36, 0.16);
+    }
+
+    .dashboard-kitchen-row:hover {
+        background-color: rgba(250, 247, 242, 0.82);
+        border-color: rgba(61, 46, 36, 0.30);
+    }
+
+    .dashboard-kitchen-row.is-urgent {
+        background-color: rgba(178, 91, 62, 0.075);
+        border-color: rgba(134, 58, 55, 0.24);
+    }
+
+    .dashboard-kitchen-row.is-warning {
+        background-color: rgba(212, 165, 116, 0.10);
+        border-color: rgba(111, 75, 31, 0.22);
+    }
+
+    .dashboard-type-badge {
+        @apply inline-flex rounded-full px-2.5 py-1 text-[11px] font-bold text-bakery-brown;
+        background-color: rgba(92, 64, 51, 0.09);
+    }
+
+    .dashboard-time-pill {
+        @apply rounded-full bg-bakery-dark px-3 py-1.5 text-xs font-bold text-white tabular-nums;
+    }
+
+    .dashboard-pending-pill {
+        @apply inline-flex rounded-full bg-bakery-amber/10 px-3 py-1 text-xs font-bold text-bakery-brown tabular-nums;
+    }
+
+    .dashboard-chart-wrap {
+        @apply h-[248px] min-h-[248px];
+    }
+
+    .dashboard-chart-wrap canvas {
+        @apply h-full max-h-[248px] w-full;
+    }
+
+    .dashboard-chart-insight {
+        @apply mt-4 rounded-xl border border-bakery-amber/15 bg-bakery-warm/65 px-4 py-3 text-sm font-semibold text-bakery-dark;
+    }
+
+    .dashboard-list-row {
+        @apply flex items-center justify-between gap-3 rounded-xl border border-transparent px-2 py-2.5 transition duration-150 sm:px-3;
+    }
+
+    .dashboard-list-row:hover {
+        @apply border-bakery-amber/10 bg-bakery-warm/75;
+    }
+
+    .dashboard-inline-link {
+        @apply mt-3 inline-flex min-h-[36px] items-center text-xs font-semibold text-bakery-brown transition hover:text-bakery-gold focus:outline-none focus:ring-2 focus:ring-bakery-gold/40;
+    }
+
+    /* ---- Formal typography system ---- */
+    .dashboard-h1 {
+        @apply text-[30px] font-display font-bold leading-tight tracking-tight text-bakery-dark sm:text-[36px];
+    }
+
+    .dashboard-h2 {
+        @apply text-[20px] font-display font-bold leading-snug tracking-tight text-bakery-dark sm:text-[24px];
+    }
+
+    .dashboard-h3 {
+        @apply text-[16px] font-bold leading-snug tracking-tight text-bakery-dark sm:text-[18px];
+    }
+
+    .dashboard-body {
+        @apply max-w-[70ch] text-sm font-medium leading-6 text-bakery-muted;
+    }
+
+    .dashboard-help {
+        @apply mt-1 text-xs font-medium leading-5 text-bakery-muted;
+    }
+
+    .dashboard-caption {
+        @apply text-[11px] font-bold uppercase tracking-[0.14em] text-bakery-muted;
+    }
+
+    .dashboard-kitchen-head {
+        @apply mb-6 flex-col sm:flex-row;
+    }
+
+    .dashboard-kitchen-summary {
+        @apply flex flex-wrap gap-2 text-xs font-semibold text-bakery-muted sm:justify-end;
+    }
+
+    .dashboard-kitchen-summary span {
+        @apply inline-flex items-center gap-1 rounded-full px-3 py-1.5;
+        background-color: rgba(92, 64, 51, 0.065);
+        color: rgba(61, 46, 36, 0.78);
+    }
+
+    .dashboard-kitchen-summary strong {
+        @apply text-bakery-dark tabular-nums;
+    }
+
+    .dashboard-kitchen-summary .is-warning {
+        background-color: rgba(212, 165, 116, 0.14);
+        color: #5c4033;
+    }
+
+    .dashboard-kitchen-id {
+        @apply truncate text-base font-bold tracking-tight text-bakery-dark;
+    }
+
+    .dashboard-kitchen-state {
+        @apply text-xs font-semibold text-bakery-muted;
+    }
+
+    .dashboard-kitchen-person {
+        @apply mt-2 truncate text-sm font-medium text-bakery-muted;
+    }
+
+    .dashboard-kitchen-empty {
+        @apply text-left;
+    }
+
+    /* ---- Icons ---- */
+    .dashboard-icon-title {
+        @apply h-5 w-5 shrink-0;
+        stroke-width: 1.75;
+    }
+
+    .dashboard-icon {
+        @apply h-5 w-5 shrink-0;
+        stroke-width: 1.75;
+    }
+
+    .dashboard-icon-sm {
+        @apply h-4 w-4 shrink-0;
+        stroke-width: 1.75;
+    }
+
+    .dashboard-icon-action {
+        @apply h-4 w-4 shrink-0;
+        stroke-width: 1.75;
+    }
+
+    /* ---- Micro-status strip ---- */
+    .dashboard-micro-status {
+    @apply flex flex-wrap items-center gap-4 rounded-xl p-3;
+        background-color: rgba(255, 255, 255, 0.10);
+        border: 1px solid rgba(92, 64, 51, 0.16);
+}
+
+    .dashboard-micro-item {
+        @apply flex items-center gap-2 text-sm;
+    }
+
+    .dashboard-micro-link {
+        @apply inline-flex items-baseline gap-1 font-medium text-bakery-brown transition-colors hover:text-bakery-dark;
+    }
+
+    .dashboard-micro-warning {
+        @apply text-bakery-amber font-semibold hover:text-bakery-amber/80;
+    }
+
+    .dashboard-micro-btn {
+        @apply inline-flex items-center gap-1 rounded-lg border border-bakery-brown/20 bg-bakery-brown/5 px-2 py-1 text-xs font-semibold text-bakery-brown transition-colors hover:bg-bakery-brown/10;
+    }
+
+    /* ---- Next action panel ---- */
+    .dashboard-next-action {
+        @apply flex flex-col justify-between;
+    }
+
+    .dashboard-action-badge {
+        @apply h-3 w-3 rounded-full;
+        background-color: rgba(196, 149, 106, 0.52);
+    }
+
+    .dashboard-next-action[data-tone="warning"] .dashboard-action-badge {
+        background-color: rgba(196, 149, 106, 0.86);
+    }
+
+    .dashboard-next-action[data-tone="calm"] .dashboard-action-badge {
+        background-color: rgba(41, 93, 45, 0.44);
+    }
+
+    .dashboard-action-button {
+        @apply inline-flex min-h-[40px] items-center justify-center gap-2 rounded-xl bg-bakery-dark px-4 py-2 text-sm font-bold text-white transition-colors hover:bg-bakery-brown focus:outline-none focus:ring-2 focus:ring-bakery-gold/40;
+    }
+
+    .dashboard-action-muted {
+        @apply inline-flex min-h-[40px] items-center rounded-xl border border-bakery-amber/20 bg-bakery-amber/10 px-4 py-2 text-sm font-bold text-bakery-brown;
+    }
+
+    /* ---- Products signal ---- */
+    .dashboard-products {
+        @apply p-5 sm:p-6;
+    }
+
+    .dashboard-products-head {
+        @apply mb-4 gap-3;
+    }
+
+    .dashboard-products-meta {
+        @apply shrink-0 rounded-full px-2.5 py-1 text-xs font-bold text-bakery-brown tabular-nums;
+        background-color: rgba(92, 64, 51, 0.07);
+    }
+
+    .dashboard-products-list {
+        @apply space-y-3;
+    }
+
+    .dashboard-product-row {
+        @apply rounded-xl border px-3 py-3;
+        background-color: rgba(250, 247, 242, 0.48);
+        border-color: rgba(61, 46, 36, 0.14);
+    }
+
+    .dashboard-product-track {
+        @apply mt-2 h-1 overflow-hidden rounded-full;
+        background-color: rgba(92, 64, 51, 0.09);
+    }
+
+    .dashboard-product-track div {
+        @apply h-full rounded-full;
+        background-color: rgba(92, 64, 51, 0.50);
+    }
+
+    .dashboard-products-empty {
+        @apply px-4 py-6 text-left;
+    }
+
+    /* ---- Skeletons & loading states ---- */
+    .dashboard-skeleton {
+        @apply relative overflow-hidden rounded-2xl;
+        background-color: rgba(92, 64, 51, 0.06);
+    }
+
+    .dashboard-skeleton::after {
+        content: "";
+        @apply pointer-events-none absolute inset-0;
+        background: linear-gradient(
+            90deg,
+            transparent 0%,
+            rgba(255, 255, 255, 0.35) 50%,
+            transparent 100%
+        );
+        animation: dashboardShimmer 1.6s ease-in-out infinite;
+    }
+
+    .dashboard-error-block {
+        @apply rounded-2xl border border-bakery-terracotta/20 bg-bakery-terracotta/5 p-6 text-center text-sm text-bakery-muted;
+    }
+
+    .dashboard-chart-loading-shimmer {
+        @apply relative overflow-hidden rounded-xl;
+        background-color: rgba(92, 64, 51, 0.04);
+    }
+
+    .dashboard-chart-loading-shimmer::after {
+        content: "";
+        @apply pointer-events-none absolute inset-0;
+        background: linear-gradient(
+            90deg,
+            transparent 0%,
+            rgba(255, 255, 255, 0.25) 50%,
+            transparent 100%
+        );
+        animation: dashboardShimmer 1.6s ease-in-out infinite;
+    }
+
+    @keyframes dashboardShimmer {
+        0%   { transform: translateX(-100%); }
+        100% { transform: translateX(100%); }
+    }
+
+    /* ---- Staggered page-load animation ---- */
+    @keyframes fadeSlideUp {
+        from { opacity: 0; transform: translateY(12px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .animate-fade-slide-up {
+        animation: fadeSlideUp 0.5s ease-out both;
+    }
+
+    .animate-row-1 { animation-delay: 0ms; }
+    .animate-row-2 { animation-delay: 80ms; }
+    .animate-row-3 { animation-delay: 160ms; }
+    .animate-row-4 { animation-delay: 240ms; }
+}
+
+
+.chart-status {
+    @apply my-4 rounded-lg bg-bakery-warm px-4 py-5 text-sm font-medium text-bakery-dark;
+}
+
+.chart-details {
+    @apply mt-3 text-sm text-bakery-dark;
+}
+
+.chart-details summary {
+    @apply min-h-6 cursor-pointer font-semibold underline underline-offset-4;
+}
+
+.chart-data-scroll {
+    @apply mt-2 max-w-full overflow-x-auto;
+}
+
+.chart-details table {
+    @apply w-full border-collapse text-left tabular-nums;
+}
+
+.chart-details caption {
+    @apply pb-2 text-left font-medium;
+}
+
+.chart-details th, .chart-details td {
+    @apply border-b border-bakery-amber/25 px-2 py-2;
+}
+@layer components {
+    .crm-workspace {
+        @apply mx-auto max-w-6xl py-6 sm:py-8;
+    }
+    .crm-heading {
+        @apply mb-5 flex flex-wrap items-center justify-between gap-4 border-b border-bakery-amber/30 pb-5;
+    }
+    .crm-heading h1 {
+        @apply min-w-0 break-words font-display text-3xl font-bold leading-tight tracking-tight text-bakery-dark sm:text-4xl;
+    }
+    .crm-workspace :is(.btn-primary, .btn-secondary, .btn-ghost, .form-input, .form-select) {
+        min-height: 44px;
+    }
+    .crm-workspace .btn-primary,
+    .crm-customer-selector .btn-primary {
+        @apply bg-bakery-brown text-white hover:bg-bakery-dark;
+    }
+    .crm-back {
+        @apply mb-3 inline-flex min-h-11 items-center gap-2 rounded text-sm font-semibold text-bakery-brown hover:underline;
+    }
+    .crm-surface {
+        @apply rounded-xl border border-bakery-amber/30 bg-white;
+    }
+    .crm-filters {
+        @apply grid gap-3 border-b border-bakery-amber/25 p-4 sm:grid-cols-[minmax(0,1fr)_10rem_auto] sm:items-end sm:px-5;
+    }
+    .crm-actions {
+        @apply flex flex-wrap items-center gap-2;
+    }
+    .crm-directory-row {
+        @apply grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1 px-4 py-3 sm:grid-cols-[minmax(0,1fr)_10rem_7rem_1rem] sm:px-5;
+    }
+    .crm-directory-row > :first-child {
+        @apply max-sm:col-span-2;
+    }
+    .crm-directory-row > .crm-row-arrow {
+        @apply max-sm:hidden;
+    }
+    .crm-column-labels {
+        @apply hidden border-b border-bakery-amber/25 bg-bakery-warm/50 text-xs font-bold text-bakery-muted sm:grid;
+    }
+    .crm-row-link {
+        @apply min-h-11 text-bakery-dark hover:bg-bakery-warm/60;
+    }
+    .crm-row-link:focus-visible {
+        outline-offset: -2px;
+    }
+    .crm-row-arrow {
+        @apply justify-self-end text-xl leading-none text-bakery-brown;
+    }
+    .crm-workspace :is(a, button, input, select):focus-visible {
+        outline: 2px solid #805133;
+    }
+    .crm-text-link {
+        @apply font-semibold text-bakery-brown underline underline-offset-4 hover:text-bakery-dark;
+    }
+    .crm-empty {
+        @apply space-y-2 px-5 py-8 text-sm text-bakery-muted;
+    }
+    .crm-pagination {
+        @apply border-t border-bakery-amber/25 px-4 py-3 sm:px-5;
+    }
+    .crm-contact-form {
+        @apply max-w-xl space-y-5 p-4 sm:p-5;
+    }
+    .crm-metrics {
+        @apply mb-5 grid divide-y divide-bakery-amber/25 sm:grid-cols-3 sm:divide-x sm:divide-y-0;
+    }
+    .crm-metrics > div {
+        @apply grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2 px-4 py-3 sm:block sm:px-5 sm:py-4;
+    }
+    .crm-metrics dd {
+        @apply mt-0 text-lg sm:mt-1 sm:text-2xl;
+    }
+    .crm-profile-grid {
+        @apply grid items-start gap-5 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)];
+    }
+    .crm-ledger {
+        @apply px-4 py-4 sm:px-5;
+        scroll-margin-top: 5rem;
+    }
+    .crm-ledger h2 {
+        @apply mb-2 text-base font-bold text-bakery-dark;
+    }
+    .crm-transaction {
+        @apply grid grid-cols-[minmax(0,1fr)_auto_1rem] items-center gap-3 rounded-md py-2.5 text-sm;
+    }
+    .crm-transaction .crm-row-arrow {
+        grid-column: 3;
+    }
+    @media (prefers-reduced-motion: no-preference) {
+        .crm-row-link {
+            transition: background-color 140ms ease;
+        }
+        .crm-row-arrow {
+            transition: transform 140ms ease;
+        }
+        .crm-row-link:is(:hover, :focus-visible) .crm-row-arrow {
+            transform: translateX(2px);
+        }
+    }
+}
