@@ -19,7 +19,6 @@
 /public/hot
 /public/storage
 /storage/*.key
-/storage/*.pem
 /storage/app/backups/
 /storage/framework/*.sqlite*
 /storage/pail
